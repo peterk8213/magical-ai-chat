@@ -46,13 +46,14 @@
     "cmdk": "1.0.4",
     "date-fns": "4.1.0",
     "embla-carousel-react": "8.5.1",
-    "eruda": "^3.2.3",
+    "eruda": "^3.4.1",
     "framer-motion": "^12.0.0",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
     "nanoid": "latest",
     "next": "15.1.0",
     "next-themes": "^0.4.4",
+    "next-world-auth": "^0.0.5",
     "react": "^19",
     "react-day-picker": "8.10.1",
     "react-dom": "^19",
@@ -60,6 +61,7 @@
     "react-markdown": "latest",
     "react-resizable-panels": "^2.1.7",
     "react-syntax-highlighter": "latest",
+    "react-toastify": "^11.0.5",
     "react-type-animation": "^3.2.0",
     "recharts": "2.15.0",
     "remark-gfm": "latest",
@@ -76,6 +78,7 @@
     "@types/react-dom": "^19",
     "@typescript-eslint/eslint-plugin": "^8.24.0",
     "@typescript-eslint/parser": "^8.24.0",
+    "@worldcoin/minikit-js": "^1.7.1",
     "eslint": "^8",
     "eslint-config-next": "15.1.3",
     "eslint-plugin-react": "^7.37.4",
@@ -83,12 +86,5 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
-  },
-  "overrides": {
-    "@types/react": "19.0.3",
-    "@types/react-dom": "19.0.2",
-    "react": "$react",
-    "react-dom": "$react-dom",
-    "next": "$next"
   }
 }

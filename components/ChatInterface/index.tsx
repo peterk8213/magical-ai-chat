@@ -13,11 +13,20 @@ import { nanoid } from "nanoid";
 import { LowCreditsWarning } from "@/components/LowCreditsWarning";
 import { ErrorMessage } from "@/components/ErrorMessage";
 
+import { useWorldAuth } from "next-world-auth/react";
+
 interface ChatInterfaceProps {
   chatId?: string;
 }
+interface User {
+  walletAddress: string;
+  username: string;
+  isHuman: boolean;
+}
 
 export function ChatInterface({ chatId = "default" }: ChatInterfaceProps) {
+  const { isInstalled, isAuthenticated, session, signIn, signOut } =
+    useWorldAuth();
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -29,6 +38,16 @@ export function ChatInterface({ chatId = "default" }: ChatInterfaceProps) {
   const [apiEndpoint, setApiEndpoint] = useState("/api/chat");
   const [retryCount, setRetryCount] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [animate, setAnimate] = useState(false);
+
+  if (!session) {
+    router.push("/sign-in");
+    return null;
+  }
+
+  const {
+    user: { username },
+  } = session as { user: User };
 
   // Load user preferences from localStorage with useMemo for caching
   const userPreferences = useMemo(() => {
@@ -66,9 +85,9 @@ export function ChatInterface({ chatId = "default" }: ChatInterfaceProps) {
       userPreferences: userPreferences, // Pass user preferences to the API
     },
     onFinish: () => {
-      // Save chat to local storage when a message is completed
-      saveChat(chatId, messages);
-      // Clear any error message on successful completion
+      // // Save chat to local storage when a message is completed
+      // saveChat(chatId, messages);
+      // // Clear any error message on successful completion
       setErrorMessage(null);
       console.log("done", messages);
     },
@@ -213,7 +232,7 @@ export function ChatInterface({ chatId = "default" }: ChatInterfaceProps) {
       const messagesContainer = document.querySelector(".messages-container");
       if (messagesContainer) {
         const { scrollTop, scrollHeight, clientHeight } = messagesContainer;
-        setShowScrollButton(scrollHeight - scrollTop - clientHeight > 100);
+        setShowScrollButton(scrollHeight - scrollTop - clientHeight > 0);
       }
     };
 
@@ -307,9 +326,10 @@ export function ChatInterface({ chatId = "default" }: ChatInterfaceProps) {
   }, [router]);
 
   console.log("message", status);
+  console.log(messages);
 
   return (
-    <>
+    <div className="flex flex-col md:flex-row h-screen w-full">
       <Sidebar
         isOpen={isSidebarOpen}
         setIsOpen={setIsSidebarOpen}
@@ -317,6 +337,7 @@ export function ChatInterface({ chatId = "default" }: ChatInterfaceProps) {
         onNewChat={createNewChat}
         toggleSidebar={toggleSidebar}
         credits={credits}
+        username={username}
       />
       <div
         className={`flex flex-col flex-1 h-screen w-full transition-all duration-300 ${
@@ -329,11 +350,12 @@ export function ChatInterface({ chatId = "default" }: ChatInterfaceProps) {
           credits={credits}
           model={apiEndpoint.includes("fallback") ? "Fallback Mode" : model}
         />
-        <div className="flex-1 overflow-hidden relative">
+        <div className="flex-1 overflow-hidden relative mt-5">
           <MessageList
             messages={messages}
             messagesEndRef={messagesEndRef}
-            isLoading={status == "submitted"}
+            isLoading={status == "submitted" || status == "streaming"}
+            isStreaming={status == "streaming"}
             setInput={setInput}
           />
           {showScrollButton && <ScrollToBottom onClick={scrollToBottom} />}
@@ -358,6 +380,6 @@ export function ChatInterface({ chatId = "default" }: ChatInterfaceProps) {
           stopGeneration={stop}
         />
       </div>
-    </>
+    </div>
   );
 }

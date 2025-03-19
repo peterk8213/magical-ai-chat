@@ -1,22 +1,33 @@
-"use client"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+"use client";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useWorldAuth } from "next-world-auth/react";
+import { useState, useCallback } from "react";
 
 export function SignInForm() {
-  const router = useRouter()
+  const router = useRouter();
+  const { isAuthenticated, session, signIn } = useWorldAuth();
+  const [loading, setLoading] = useState(false);
 
-  const handleSignIn = () => {
-    // Simulate sign-in
-    console.log("Sign in with World ID clicked")
+  const handleSignIn = useCallback(async () => {
+    if (loading) return;
+    setLoading(true);
+    await signIn().then(() => {
+      setLoading(false);
+    });
+
+    console.log("Sign in with World ID clicked");
     // Redirect to chat after "sign in"
-    router.push("/")
-  }
+    router.push("/");
+  }, [signIn, router]);
 
   return (
     <div className="w-full max-w-sm space-y-4">
       <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold">Welcome to MagicalAI</h1>
-        <p className="text-zinc-400">Sign in below (we'll increase your message limits if you do 😊)</p>
+        <p className="text-zinc-400">
+          Sign in below (we'll increase your message limits if you do 😊)
+        </p>
       </div>
 
       <div className="flex justify-center pt-4">
@@ -39,6 +50,5 @@ export function SignInForm() {
         </Link>
       </p>
     </div>
-  )
+  );
 }
-

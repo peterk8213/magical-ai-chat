@@ -12,6 +12,8 @@ interface MessageListProps {
   messagesEndRef: RefObject<HTMLDivElement>;
   isLoading: boolean;
   setInput?: (input: string) => void;
+  stopGeneration?: () => void;
+  isStreaming?: boolean;
 }
 
 // Conversation starters with display text and full prompts
@@ -44,6 +46,8 @@ export const MessageList = memo(function MessageList({
   messagesEndRef,
   isLoading,
   setInput,
+  stopGeneration,
+  isStreaming,
 }: MessageListProps) {
   // Safe handler for starter clicks with useCallback
   const handleStarterClick = useCallback(
@@ -56,10 +60,10 @@ export const MessageList = memo(function MessageList({
   );
 
   return (
-    <ScrollArea className="h-[calc(100vh-8.5rem)] messages-container ">
-      <div className="space-y-6 max-w-3xl mx-auto px-4 py-6">
+    <ScrollArea className="h-[calc(100vh-9.5rem)] messages-container pt-4">
+      <div className="space-y-6 max-w-3xl mx-auto px-2 py-6">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-[calc(100vh-15rem)] text-center">
+          <div className="flex flex-col items-center justify-center h-[calc(100vh-20rem)] text-center">
             <div className="bg-zinc-900/50 p-6 rounded-xl max-w-md">
               <h3 className="text-xl font-medium mb-2">Welcome to MagicalAI</h3>
               <p className="text-zinc-400 mb-4">
@@ -81,11 +85,17 @@ export const MessageList = memo(function MessageList({
           </div>
         ) : (
           messages.map((message, index) => (
-            <MessageItem
-              key={message.id}
-              message={message}
-              isLast={index === messages.length - 1}
-            />
+            <div>
+              <MessageItem
+                key={message.id}
+                message={message}
+                isLast={index === messages.length - 1}
+                animate={isLoading}
+                isStreaming={isLoading}
+                status={message.status}
+
+              />
+            </div>
           ))
         )}
         {isLoading && (

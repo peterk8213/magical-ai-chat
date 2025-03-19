@@ -1,16 +1,26 @@
-"use client"
+"use client";
 
-import { AlertTriangle, RefreshCw } from "lucide-react"
-import { Button } from "@/components/ui/button"
-
+import { AlertTriangle, RefreshCw, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 interface ErrorMessageProps {
-  message: string
-  onRetry?: () => void
+  message: string;
+  onRetry?: () => void;
 }
 
 export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
+  const [close, setclose] = useState(false);
   return (
     <div className="fixed bottom-20 left-0 right-0 mx-auto max-w-md bg-red-900/80 text-white p-4 rounded-lg shadow-lg text-center z-50 border border-red-700">
+      <div className="">
+        <Button
+          onClick={() => setclose(true)}
+          variant={"ghost"}
+          className="absolute top-2 right-2 text-white"
+        >
+          <X className="h-5 w-5" />
+        </Button>
+      </div>
       <div className="flex items-center justify-center space-x-2 mb-2">
         <AlertTriangle className="h-5 w-5 text-red-300" />
         <p className="font-medium">Error</p>
@@ -25,6 +35,5 @@ export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
         </Button>
       )}
     </div>
-  )
+  );
 }
-
